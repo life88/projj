@@ -1,6 +1,6 @@
 'use strict';
 
-const path = require('path');
+const path = require('pathe');
 const coffee = require('coffee');
 const mm = require('mm');
 const rimraf = require('mz-modules/rimraf');
@@ -8,7 +8,7 @@ const rimraf = require('mz-modules/rimraf');
 const binfile = path.join(__dirname, '../bin/projj.js');
 const fixtures = path.join(__dirname, 'fixtures');
 const tmp = path.join(fixtures, 'tmp');
-
+const USER_HOME = require('../lib/adapter/user_home');
 
 describe('test/projj_run.test.js', () => {
 
@@ -17,7 +17,7 @@ describe('test/projj_run.test.js', () => {
 
   it('should run hook that do not exist', done => {
     const home = path.join(fixtures, 'hook');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     coffee.fork(binfile, [ 'run', 'noexist' ])
     // .debug()
       .expect('stderr', /Hook "noexist" don't exist/)
@@ -28,7 +28,7 @@ describe('test/projj_run.test.js', () => {
   it('should run hook in cwd', done => {
     const home = path.join(fixtures, 'hook');
     const cwd = path.join(home, 'github.com/popomore/test1');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     coffee.fork(binfile, [ 'run', 'custom' ], { cwd })
     // .debug()
       .expect('stdout', new RegExp(`Run hook custom for ${home}/github.com/popomore/test1`))
@@ -39,7 +39,7 @@ describe('test/projj_run.test.js', () => {
 
   it('should using buildin hook when has same name', done => {
     const home = path.join(fixtures, 'hook');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     coffee.fork(binfile, [ 'run', 'ls' ])
     // .debug()
       .expect('stdout', /buildin ls/)
@@ -49,7 +49,7 @@ describe('test/projj_run.test.js', () => {
 
   it('should get hook config', done => {
     const home = path.join(fixtures, 'hook');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     coffee.fork(binfile, [ 'run', 'run_config' ])
     // .debug()
       .expect('stdout', /get config from env true/)

@@ -1,6 +1,6 @@
 'use strict';
 
-const path = require('path');
+const path = require('pathe');
 const coffee = require('coffee');
 const mm = require('mm');
 const fs = require('mz/fs');
@@ -9,7 +9,7 @@ const rimraf = require('mz-modules/rimraf');
 const binfile = path.join(__dirname, '../bin/projj.js');
 const fixtures = path.join(__dirname, 'fixtures');
 const tmp = path.join(fixtures, 'tmp');
-
+const USER_HOME = require('../lib/adapter/user_home');
 
 describe('test/projj_find.test.js', () => {
 
@@ -18,7 +18,7 @@ describe('test/projj_find.test.js', () => {
 
   it('should run script when changeDirectory is true and platform is darwin', function* () {
     const home = path.join(fixtures, 'find-change-directory');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     yield makeConfig(home);
 
     yield coffee.fork(binfile, [ 'find', 'egg' ])
@@ -32,7 +32,7 @@ describe('test/projj_find.test.js', () => {
 
   it('should show warn when changeDirectory is true and platform is not darwin', function* () {
     const home = path.join(fixtures, 'find-change-directory');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     yield makeConfig(home);
 
     yield coffee.fork(binfile, [ 'find', 'egg' ])
@@ -45,7 +45,7 @@ describe('test/projj_find.test.js', () => {
 
   it('should to prompt if the input is empty', function* () {
     const home = path.join(fixtures, 'find');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
 
     yield coffee.fork(binfile, [ 'find', '' ])
       .expect('stderr', new RegExp('Please specify the repo name:'))
@@ -56,7 +56,7 @@ describe('test/projj_find.test.js', () => {
 
   it('should find endsWith egg', function* () {
     const home = path.join(fixtures, 'find');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     yield makeConfig(home);
 
     yield coffee.fork(binfile, [ 'find', 'egg' ])
@@ -68,7 +68,7 @@ describe('test/projj_find.test.js', () => {
 
   it('should find endsWith /egg', function* () {
     const home = path.join(fixtures, 'find');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     yield makeConfig(home);
 
     yield coffee.fork(binfile, [ 'find', '/egg' ])
@@ -80,7 +80,7 @@ describe('test/projj_find.test.js', () => {
 
   it('should find match eggjs/autod', function* () {
     const home = path.join(fixtures, 'find');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     yield makeConfig(home);
 
     yield coffee.fork(binfile, [ 'find', 'eggjs/autod' ])
@@ -92,7 +92,7 @@ describe('test/projj_find.test.js', () => {
 
   it('should find two matching file with egg-core', function* () {
     const home = path.join(fixtures, 'find');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     yield makeConfig(home);
 
     yield coffee.fork(binfile, [ 'find', 'egg-core' ])
@@ -106,7 +106,7 @@ describe('test/projj_find.test.js', () => {
 
   it('should find nothing with eggggg', function* () {
     const home = path.join(fixtures, 'find');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     yield makeConfig(home);
 
     yield coffee.fork(binfile, [ 'find', 'eggggg' ])

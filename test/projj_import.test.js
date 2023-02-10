@@ -1,6 +1,6 @@
 'use strict';
 
-const path = require('path');
+const path = require('pathe');
 const coffee = require('coffee');
 const mm = require('mm');
 const rimraf = require('mz-modules/rimraf');
@@ -14,12 +14,12 @@ const tmp = path.join(fixtures, 'tmp');
 const repo = path.join(fixtures, 'importdir/repo');
 const home = path.join(fixtures, 'base-tmp');
 const target = path.join(tmp, 'github.com/popomore/projj');
-
+const USER_HOME = require('../lib/adapter/user_home');
 
 describe('test/projj_import.test.js', () => {
 
   beforeEach(() => {
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
   });
   afterEach(mm.restore);
   afterEach(() => rimraf(tmp));

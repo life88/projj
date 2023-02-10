@@ -1,6 +1,6 @@
 'use strict';
 
-const path = require('path');
+const path = require('pathe');
 const coffee = require('coffee');
 const binfile = path.join(__dirname, '../bin/projj.js');
 

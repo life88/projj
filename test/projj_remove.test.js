@@ -1,6 +1,6 @@
 'use strict';
 
-const path = require('path');
+const path = require('pathe');
 const coffee = require('coffee');
 const mm = require('mm');
 const rimraf = require('mz-modules/rimraf');
@@ -13,10 +13,11 @@ const assert = require('assert');
 const projects = path.join(home, 'projects');
 const tempProject = path.join(home, 'temp');
 const catchPath = path.join(home, '.projj/cache.json');
+const USER_HOME = require('../lib/adapter/user_home');
 
 describe('test/projj_remove.test.js', () => {
   beforeEach(function* () {
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     const content = JSON.stringify({
       'github.com/popomore/projj': {},
       'github.com/eggjs/egg': {},

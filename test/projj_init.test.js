@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('mz/fs');
-const path = require('path');
+const path = require('pathe');
 const coffee = require('coffee');
 const mm = require('mm');
 const rimraf = require('mz-modules/rimraf');
@@ -11,6 +11,7 @@ const assert = require('assert');
 const binfile = path.join(__dirname, '../bin/projj.js');
 const fixtures = path.join(__dirname, 'fixtures');
 const tmp = path.join(fixtures, 'tmp');
+const USER_HOME = require('../lib/adapter/user_home');
 
 describe('test/projj_init.test.js', () => {
 
@@ -19,7 +20,7 @@ describe('test/projj_init.test.js', () => {
 
   it('should get base directory with relative path', done => {
     const home = path.join(fixtures, 'base-relative');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     coffee.fork(binfile, [ 'init' ])
     // .debug()
       .expect('stdout', new RegExp(`Set base directory: ${home}\n`))
@@ -29,7 +30,7 @@ describe('test/projj_init.test.js', () => {
 
   it('should get base directory with tilde', done => {
     const home = path.join(fixtures, 'base-tilde');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     coffee.fork(binfile, [ 'init' ])
     // .debug()
       .expect('stdout', new RegExp(`Set base directory: ${home}/code\n`))
@@ -38,7 +39,7 @@ describe('test/projj_init.test.js', () => {
   });
 
   it('should set base when config don\'t exist', done => {
-    mm(process.env, 'HOME', tmp);
+    mm(process.env, USER_HOME, tmp);
     coffee.fork(binfile, [ 'init' ])
     // .debug()
       .expect('stdout', /Set base directory: /)
@@ -55,17 +56,17 @@ describe('test/projj_init.test.js', () => {
   });
 
   it('should set base with relative path', done => {
-    mm(process.env, 'HOME', tmp);
+    mm(process.env, USER_HOME, tmp);
     coffee.fork(binfile, [ 'init' ])
     // .debug()
-      .expect('stdout', new RegExp(`Set base directory: ${process.cwd()}/code\n`))
+      .expect('stdout', new RegExp(`Set base directory: ${path.resolve(process.cwd())}/code\n`))
       .expect('code', 0)
       .write('code')
       .end(done);
   });
 
   it('should upgrade', function* () {
-    mm(process.env, 'HOME', tmp);
+    mm(process.env, USER_HOME, tmp);
     yield mkdirp(path.join(tmp, '.projj'));
     yield fs.writeFile(path.join(tmp, '.projj/config.json'), `{"base":"${tmp}"}`);
 
@@ -80,7 +81,7 @@ describe('test/projj_init.test.js', () => {
   });
 
   it('should not upgrade', function* () {
-    mm(process.env, 'HOME', tmp);
+    mm(process.env, USER_HOME, tmp);
     yield mkdirp(path.join(tmp, '.projj'));
     yield fs.writeFile(path.join(tmp, '.projj/config.json'), `{"base":"${tmp}"}`);
     yield fs.writeFile(path.join(tmp, '.projj/cache.json'), '{"version":"v1"}');

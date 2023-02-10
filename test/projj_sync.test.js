@@ -1,6 +1,6 @@
 'use strict';
 
-const path = require('path');
+const path = require('pathe');
 const coffee = require('coffee');
 const mm = require('mm');
 const rimraf = require('mz-modules/rimraf');
@@ -9,7 +9,7 @@ const fs = require('mz/fs');
 const binfile = path.join(__dirname, '../bin/projj.js');
 const fixtures = path.join(__dirname, 'fixtures');
 const tmp = path.join(fixtures, 'tmp');
-
+const USER_HOME = require('../lib/adapter/user_home');
 
 describe('test/projj_sync.test.js', () => {
 
@@ -18,7 +18,7 @@ describe('test/projj_sync.test.js', () => {
 
   it('should run hook that do not exist', function* () {
     const home = path.join(fixtures, 'hook');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
 
     const content = JSON.stringify({
       [path.join(tmp, 'github.com/popomore/projj')]: {},

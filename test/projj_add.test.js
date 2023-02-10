@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('fs');
-const path = require('path');
+const path = require('pathe');
 const coffee = require('coffee');
 const mm = require('mm');
 const { rimraf, mkdirp } = require('mz-modules');
@@ -10,6 +10,7 @@ const assert = require('assert');
 const binfile = path.join(__dirname, '../bin/projj.js');
 const fixtures = path.join(__dirname, 'fixtures');
 const tmp = path.join(fixtures, 'tmp');
+const USER_HOME = require('../lib/adapter/user_home');
 
 describe('test/projj_add.test.js', () => {
 
@@ -22,7 +23,7 @@ describe('test/projj_add.test.js', () => {
     const cachePath = path.join(home, '.projj/cache.json');
     const repo = 'https://github.com/popomore/projj.git';
     const target = path.join(tmp, 'github.com/popomore/projj');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
 
     fs.writeFileSync(cachePath, JSON.stringify({
       'github.com/popomore/test1': {},
@@ -52,7 +53,7 @@ describe('test/projj_add.test.js', () => {
     const cachePath = path.join(home, '.projj/cache.json');
     const repo = 'github://popomore/projj';
     const target = path.join(tmp, 'github.com/popomore/projj');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
 
     coffee.fork(binfile, [ 'add', repo ])
     // .debug()
@@ -74,7 +75,7 @@ describe('test/projj_add.test.js', () => {
     const home = path.join(fixtures, 'base-tmp');
     const repo = 'https://github.com/popomore/projj.git';
     const target = path.join(tmp, 'github.com/popomore/projj');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     yield mkdirp(target);
 
     yield coffee.fork(binfile, [ 'add', repo ])
@@ -89,10 +90,10 @@ describe('test/projj_add.test.js', () => {
     const home = path.join(fixtures, 'hook-add');
     const repo = 'https://github.com/popomore/test.git';
     const target = path.join(tmp, 'github.com/popomore/test');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
     coffee.fork(binfile, [ 'add', repo ])
     // .debug()
-      .expect('stdout', new RegExp(`pre hook, cwd ${process.cwd()}`))
+      .expect('stdout', new RegExp(`pre hook, cwd ${path.resolve(process.cwd())}`))
       .expect('stdout', new RegExp(`post hook, cwd ${target}`))
       .expect('stdout', /pre hook, get package name projj/)
       .expect('stdout', /post hook, get package name spm-bump/)
@@ -104,7 +105,7 @@ describe('test/projj_add.test.js', () => {
     const home = path.join(fixtures, 'add-change-directory');
     const repo = 'https://github.com/popomore/projj.git';
     const target = path.join(tmp, 'github.com/popomore/projj');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
 
     coffee.fork(binfile, [ 'add', repo ])
     // .debug()
@@ -121,7 +122,7 @@ describe('test/projj_add.test.js', () => {
     const home = path.join(fixtures, 'add-change-directory');
     const repo = 'https://github.com/popomore/projj.git';
     const target = path.join(tmp, 'github.com/popomore/projj');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
 
     coffee.fork(binfile, [ 'add', repo ])
     // .debug()
@@ -138,7 +139,7 @@ describe('test/projj_add.test.js', () => {
     const home = path.join(fixtures, 'multiple-directory');
     const repo = 'https://github.com/popomore/projj.git';
     const target = path.join(home, 'a/github.com/popomore/projj');
-    mm(process.env, 'HOME', home);
+    mm(process.env, USER_HOME, home);
 
     yield coffee.fork(binfile, [ 'add', repo ])
       // .debug()
